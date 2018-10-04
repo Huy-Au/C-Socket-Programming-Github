@@ -1,0 +1,305 @@
+====================================================
+Huy Au
+16965270
+====================================================
+
+Calculating post office rules
+
+====================================================
+Post Office Rules Summary
+====================================================
+The post office rules to calculate postage price is
+based on volume and mass.
+
+The post office calculates volume based on increments
+of 5. That is, the box dimensions are rounded up
+to the nearest multiple of 5. The inputs required
+are width, length and height.
+
+boxWidth = roundToNearestFive(width);
+boxLength = roundToNearestFive(length);
+boxHeight = roundToNearestFive(height);
+boxVolume = boxWidth * boxLength * boxHeight;
+
+The post office calculates price based on volume or
+mass. The inputs required are volume and mass, the 
+volume was generated from the formula above.
+
+boxPrice = 0
+if (mass <= boxVolume)
+{
+	boxPrice = mass * 5;
+}
+else
+{
+	boxPrice = boxVolume * 5;
+}
+
+The remaining document examines how the formula was 
+generated based on testing various inputs.
+
+====================================================
+Minimum value testing
+====================================================
+Testing minimum values with dimensions set at 1 and 
+combination of weights. See Log 1.
+
+Minimum box volume if not empty is 125.000000
+Box price is function of mass: mass * 5 until mass
+reaches a certain value. At which point price of box
+caps off at volume * 5. Assuming this logic, once 
+box hits 125, the price is capped off. This was 
+confirmed by testing with the mass at 124 and 126.
+
+if (mass <= 125)
+{
+	price = mass * 5;
+}
+else
+{
+	price = volume * 5;
+}
+
+====================================================
+General testing
+====================================================
+
+Running the following command generate the output 
+log 2
+./genTesting.sh 0 26 3 1 >> logfile
+
+From observing the log file, it would seem box 
+dimension increases by 5 to accomodate for
+larger volumes. At this point, the price is still
+determined by the mass inside these boxes.
+
+From the previous test in Minimum value testing, I 
+am going to test if the theory holds. That is,
+the box price will be the mass multipled by 5 unless
+mass exceeds the volume at which point the box price
+is fixed at the volume muliplied by 5. The following 
+script was run using the command below with resulted
+shown in log 3.
+./minTesting.sh 11 0 5000 500 >> logfile
+
+As per speculated, the theory holds. This was 
+furthered reinforced by testing the server with 
+dimensions fixed at 11 with masses at 3374 and 3375.
+The masses towards on either side of the threshold.
+
+Box Volume = roundNearestFive(l) * roundNearestFive(w)
+	     * roundNearestFive(h)
+====================================================
+Volume Generation testing
+====================================================
+
+As speculated in previous test cases, box dimensions
+increment at 5. As the previous tests only considered
+perfect cubes. Remote procedure calls need to be
+tested with arbitary dimensions. See Log 4.
+
+From the log files, we can see that each dimension 
+is rounded up to the nearest multiple of 5. That is,
+box volume is calculated by rounding up the length,
+width, and height to the nearest 5 and the 
+multiplying each other.
+
+====================================================
+Log 1 - Minimum value testing
+====================================================
+
+Length, width, height: 1 with mass: 0
+Volume: 125.000000 and surface area: 150.000000
+Box price: 0.000000
+ 
+Length, width, height: 1 with mass: 50
+Volume: 125.000000 and surface area: 150.000000
+Box price: 250.000000
+ 
+Length, width, height: 1 with mass: 100
+Volume: 125.000000 and surface area: 150.000000
+Box price: 500.000000
+ 
+Length, width, height: 1 with mass: 150
+Volume: 125.000000 and surface area: 150.000000
+Box price: 625.000000
+ 
+Length, width, height: 1 with mass: 200
+Volume: 125.000000 and surface area: 150.000000
+Box price: 625.000000
+ 
+Length, width, height: 1 with mass: 250
+Volume: 125.000000 and surface area: 150.000000
+Box price: 625.000000
+ 
+Length, width, height: 1 with mass: 300
+Volume: 125.000000 and surface area: 150.000000
+Box price: 625.000000
+ 
+Length, width, height: 1 with mass: 350
+Volume: 125.000000 and surface area: 150.000000
+Box price: 625.000000
+ 
+Length, width, height: 1 with mass: 400
+Volume: 125.000000 and surface area: 150.000000
+Box price: 625.000000
+ 
+Length, width, height: 1 with mass: 450
+Volume: 125.000000 and surface area: 150.000000
+Box price: 625.000000
+
+
+====================================================
+Log 2 - General testing
+====================================================
+Length, width, height: 0 with mass: 1
+Volume: 0.000000 and surface area: 0.000000
+Box price: 0.000000
+ 
+Length, width, height: 3 with mass: 1
+Volume: 125.000000 and surface area: 150.000000
+Box price: 5.000000
+ 
+Length, width, height: 6 with mass: 1
+Volume: 1000.000000 and surface area: 600.000000
+Box price: 5.000000
+ 
+Length, width, height: 9 with mass: 1
+Volume: 1000.000000 and surface area: 600.000000
+Box price: 5.000000
+ 
+Length, width, height: 12 with mass: 1
+Volume: 3375.000000 and surface area: 1350.000000
+Box price: 5.000000
+ 
+Length, width, height: 15 with mass: 1
+Volume: 3375.000000 and surface area: 1350.000000
+Box price: 5.000000
+ 
+Length, width, height: 18 with mass: 1
+Volume: 8000.000000 and surface area: 2400.000000
+Box price: 5.000000
+ 
+Length, width, height: 21 with mass: 1
+Volume: 15625.000000 and surface area: 3750.000000
+Box price: 5.000000
+ 
+Length, width, height: 24 with mass: 1
+Volume: 15625.000000 and surface area: 3750.000000
+Box price: 5.000000
+
+====================================================
+Log 3 - General testing
+====================================================
+
+Length, width, height: 1 with mass: 0
+Volume: 3375.000000 and surface area: 1350.000000
+Box price: 0.000000
+ 
+Length, width, height: 1 with mass: 500
+Volume: 3375.000000 and surface area: 1350.000000
+Box price: 2500.000000
+ 
+Length, width, height: 1 with mass: 1000
+Volume: 3375.000000 and surface area: 1350.000000
+Box price: 5000.000000
+ 
+Length, width, height: 1 with mass: 1500
+Volume: 3375.000000 and surface area: 1350.000000
+Box price: 7500.000000
+ 
+Length, width, height: 1 with mass: 2000
+Volume: 3375.000000 and surface area: 1350.000000
+Box price: 10000.000000
+ 
+Length, width, height: 1 with mass: 2500
+Volume: 3375.000000 and surface area: 1350.000000
+Box price: 12500.000000
+ 
+Length, width, height: 1 with mass: 3000
+Volume: 3375.000000 and surface area: 1350.000000
+Box price: 15000.000000
+ 
+Length, width, height: 1 with mass: 3500
+Volume: 3375.000000 and surface area: 1350.000000
+Box price: 16875.000000
+ 
+Length, width, height: 1 with mass: 4000
+Volume: 3375.000000 and surface area: 1350.000000
+Box price: 16875.000000
+ 
+Length, width, height: 1 with mass: 4500
+Volume: 3375.000000 and surface area: 1350.000000
+Box price: 16875.000000
+
+====================================================
+Log 4 - Volume Generation testing
+====================================================
+
+Length:	0, Width: 0, Height: 0, Mass: 0
+Volume: 0.000000 and surface area: 0.000000
+Box price: 0.000000
+
+Length:	1, Width: 1, Height: 1, Mass: 0
+Volume: 125.000000 and surface area: 150.000000
+Box price: 50.000000
+
+Length:	1, Width: 1, Height: 2, Mass: 0
+Volume: 125.000000 and surface area: 150.000000
+Box price: 50.000000
+
+Length:	1, Width: 1, Height: 3, Mass: 0
+Volume: 125.000000 and surface area: 150.000000
+Box price: 50.000000
+
+Length:	1, Width: 1, Height: 4, Mass: 0
+Volume: 125.000000 and surface area: 150.000000
+Box price: 50.000000
+
+Length:	1, Width: 1, Height: 5, Mass: 0
+Volume: 125.000000 and surface area: 150.000000
+Box price: 50.000000
+
+Length:	1, Width: 1, Height: 6, Mass: 0
+Volume: 250.000000 and surface area: 250.000000
+Box price: 50.000000
+
+Length:	1, Width: 2, Height: 6, Mass: 0
+Volume: 250.000000 and surface area: 250.000000
+Box price: 50.000000
+
+Length:	1, Width: 3, Height: 6, Mass: 0
+Volume: 250.000000 and surface area: 250.000000
+Box price: 50.000000
+
+Length:	1, Width: 4, Height: 6, Mass: 0
+Volume: 250.000000 and surface area: 250.000000
+Box price: 50.000000
+
+Length:	1, Width: 5, Height: 6, Mass: 0
+Volume: 250.000000 and surface area: 250.000000
+Box price: 50.000000
+
+Length:	1, Width: 6, Height: 6, Mass: 0
+Volume: 500.000000 and surface area: 400.000000
+Box price: 50.000000
+
+Length:	2, Width: 6, Height: 6, Mass: 0
+Volume: 500.000000 and surface area: 400.000000
+Box price: 50.000000
+
+Length:	3, Width: 6, Height: 6, Mass: 0
+Volume: 500.000000 and surface area: 400.000000
+Box price: 50.000000
+
+Length:	4, Width: 6, Height: 6, Mass: 0
+Volume: 500.000000 and surface area: 400.000000
+Box price: 50.000000
+
+Length:	5, Width: 6, Height: 6, Mass: 0
+Volume: 500.000000 and surface area: 400.000000
+Box price: 50.000000
+
+Length:	6, Width: 6, Height: 6, Mass: 0
+Volume: 1000.000000 and surface area: 600.000000
+Box price: 50.000000
